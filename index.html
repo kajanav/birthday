@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#07040b">
+    <meta name="description" content="A little birthday surprise, made with love.">
+    <title>A Little Surprise For You ❤️</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Great+Vibes&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ===== Ambient background (stars, glowing particles, floating hearts & balloons) ===== -->
+    <div class="ambient" aria-hidden="true">
+        <div class="orb orb--1"></div>
+        <div class="orb orb--2"></div>
+        <div class="orb orb--3"></div>
+        <div class="orb orb--4"></div>
+        <canvas id="skyCanvas" class="sky"></canvas>
+        <div id="floaters" class="layer"></div>
+    </div>
+    <div class="dim-layer" aria-hidden="true"></div>
+    <div id="celebrateLayer" class="layer layer--celebrate" aria-hidden="true"></div>
+
+    <!-- ===== Little fixed UI: birthday date + music ===== -->
+    <div class="date-chip" id="dateChip">
+        <span class="date-chip__date"></span>
+        <span class="date-chip__note"></span>
+    </div>
+
+    <div class="music" id="music">
+        <button class="music__btn" id="musicToggle" type="button" aria-label="Play music" aria-pressed="false">
+            <span class="music__icon" aria-hidden="true">🎵</span>
+            <span class="music__eq" aria-hidden="true"><i></i><i></i><i></i></span>
+        </button>
+        <button class="music__mute" id="muteToggle" type="button" aria-label="Mute music" aria-pressed="false">🔊</button>
+    </div>
+
+    <main id="app">
+
+        <!-- 1. WELCOME -->
+        <section class="screen" id="welcome" tabindex="-1" aria-label="Welcome">
+            <div class="screen__inner welcome">
+                <p class="eyebrow seq" id="welcomeEyebrow"></p>
+                <h1 class="display seq" id="welcomeTitle"></h1>
+                <div class="divider seq" id="welcomeDivider" aria-hidden="true"><span>✦</span></div>
+                <div class="welcome__lines" id="welcomeLines"></div>
+                <button class="btn btn--primary btn--large seq" id="beginBtn" type="button"></button>
+            </div>
+        </section>
+
+        <!-- 2. QUIZ -->
+        <section class="screen" id="quiz" tabindex="-1" aria-label="A little birthday quiz">
+            <div class="screen__inner">
+                <div class="glass quiz-card" id="quizCard">
+                    <div class="quiz-progress">
+                        <span class="quiz-progress__label" id="quizLabel"></span>
+                        <div class="quiz-progress__bar" id="quizBar" role="progressbar" aria-label="Quiz progress" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0">
+                            <span id="quizFill"></span>
+                        </div>
+                    </div>
+                    <div class="quiz-body" id="quizBody"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. SECRET MESSAGE -->
+        <section class="screen" id="secret" tabindex="-1" data-dark aria-label="A secret message">
+            <div class="screen__inner narrow">
+                <div class="type-lines" id="secretLines" aria-live="polite"></div>
+                <button class="btn btn--primary btn--large seq" id="openSurpriseBtn" type="button"></button>
+            </div>
+        </section>
+
+        <!-- 4. OUR MEMORIES -->
+        <section class="screen" id="memories" tabindex="-1" aria-labelledby="memoriesTitle">
+            <div class="screen__inner wide">
+                <header class="section-head">
+                    <p class="eyebrow" id="memoriesEyebrow"></p>
+                    <h2 class="title" id="memoriesTitle"></h2>
+                    <p class="subtitle" id="memoriesSubtitle"></p>
+                </header>
+                <div class="memories" id="memoryList"></div>
+                <div class="screen-actions">
+                    <button class="btn btn--ghost" id="memoriesBack" type="button"></button>
+                    <button class="btn btn--primary" id="memoriesNext" type="button"></button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. OUR STORY -->
+        <section class="screen" id="story" tabindex="-1" aria-labelledby="storyTitle">
+            <div class="screen__inner">
+                <header class="section-head">
+                    <p class="eyebrow" id="storyEyebrow"></p>
+                    <h2 class="title" id="storyTitle"></h2>
+                    <p class="subtitle" id="storySubtitle"></p>
+                </header>
+                <ol class="timeline" id="timeline" aria-live="polite"></ol>
+                <div class="story-actions">
+                    <button class="btn btn--ghost" id="storyBack" type="button"></button>
+                    <button class="btn btn--primary" id="storyNext" type="button"></button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. 25TH BIRTHDAY REVEAL -->
+        <section class="screen" id="reveal" tabindex="-1" data-dark aria-label="Birthday reveal">
+            <div class="screen__inner">
+                <div class="stage" aria-live="polite">
+                    <p class="cine cine--date" id="rvDate"></p>
+                    <p class="cine cine--words" id="rvWords"></p>
+                    <div class="cine cine--years" id="rvYearsWrap">
+                        <span class="rv-number gradient-text" id="rvNumber"></span>
+                        <span class="rv-years" id="rvYears"></span>
+                    </div>
+                    <p class="cine cine--today" id="rvToday"></p>
+                    <div class="cine cine--happy" id="rvHappyWrap">
+                        <div class="halo" aria-hidden="true"></div>
+                        <p class="happy-title" id="rvHappy"></p>
+                        <p class="happy-love script" id="rvLove"></p>
+                        <button class="btn btn--primary btn--large seq" id="revealBtn" type="button"></button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. FINAL BIRTHDAY LETTER -->
+        <section class="screen" id="letter" tabindex="-1" aria-labelledby="letterTitle">
+            <div class="screen__inner">
+                <h2 class="letter-title" id="letterTitle">
+                    <span id="letterTitleTop"></span>
+                    <span class="script letter-title__love" id="letterTitleLove"></span>
+                </h2>
+                <article class="glass letter" id="letterCard" tabindex="0" aria-describedby="letterHint">
+                    <div class="letter__ornament" aria-hidden="true"><span>✦</span></div>
+                    <p class="sr-only" id="letterSr"></p>
+                    <div class="letter__body" id="letterBody"></div>
+                    <p class="letter__sign seq" id="letterSign"></p>
+                </article>
+                <p class="hint" id="letterHint"></p>
+                <button class="btn btn--secret seq" id="oneMoreBtn" type="button"></button>
+            </div>
+        </section>
+
+        <!-- 8. ONE MORE THING (secret) -->
+        <section class="screen" id="oneMore" tabindex="-1" data-dark aria-label="One more thing">
+            <div class="screen__inner narrow">
+                <div class="type-lines" id="oneMoreLines" aria-live="polite"></div>
+                <div class="big-heart seq" id="bigHeart" aria-hidden="true">
+                    <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                </div>
+                <button class="btn btn--primary btn--large seq" id="oneMoreContinue" type="button"></button>
+            </div>
+        </section>
+
+        <!-- 9. FINAL SCREEN -->
+        <section class="screen" id="final" tabindex="-1" aria-label="Happy birthday">
+            <div class="screen__inner final">
+                <p class="final-date seq" id="finalDate"></p>
+                <div id="finalLines"></div>
+                <p class="final-signature seq" id="finalSignature">
+                    <span id="finalMade"></span>
+                    <span id="finalBy"></span>
+                    <span class="script final-signature__name" id="finalName"></span>
+                </p>
+                <div class="screen-actions seq" id="finalActions">
+                    <button class="btn btn--ghost" id="finalLetterBtn" type="button"></button>
+                    <button class="btn btn--primary" id="restartBtn" type="button"></button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Effects on top: click hearts, cursor trail, confetti -->
+    <div id="fxLayer" class="layer layer--fx" aria-hidden="true"></div>
+    <canvas id="confettiCanvas" class="confetti" aria-hidden="true"></canvas>
+
+    <noscript>
+        <p class="noscript">This little surprise needs JavaScript turned on ❤️</p>
+    </noscript>
+
+    <script src="script.js" defer></script>
+</body>
+</html>
